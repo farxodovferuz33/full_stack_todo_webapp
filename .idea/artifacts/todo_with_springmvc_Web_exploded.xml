@@ -1,0 +1,35 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" name="todo_with_springmvc:Web exploded">
+    <output-path>$PROJECT_DIR$/out/artifacts/todo_with_springmvc_Web_exploded</output-path>
+    <root id="root">
+      <element id="javaee-facet-resources" facet="todo_with_springmvc/web/Web" />
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="todo_with_springmvc" />
+        </element>
+        <element id="directory" name="lib">
+          <element id="library" level="project" name="Maven: org.springframework:spring-webmvc:6.0.11" />
+          <element id="library" level="project" name="Maven: org.springframework:spring-beans:6.0.11" />
+          <element id="library" level="project" name="Maven: org.springframework:spring-context:6.0.11" />
+          <element id="library" level="project" name="Maven: org.springframework:spring-core:6.0.11" />
+          <element id="library" level="project" name="Maven: org.springframework:spring-jcl:6.0.11" />
+          <element id="library" level="project" name="Maven: org.springframework:spring-expression:6.0.11" />
+          <element id="library" level="project" name="Maven: org.springframework:spring-web:6.0.11" />
+          <element id="library" level="project" name="Maven: io.micrometer:micrometer-observation:1.10.9" />
+          <element id="library" level="project" name="Maven: io.micrometer:micrometer-commons:1.10.9" />
+          <element id="library" level="project" name="Maven: org.projectlombok:lombok:1.18.28" />
+          <element id="library" level="project" name="Maven: org.springframework:spring-aop:5.0.12.RELEASE" />
+          <element id="library" level="project" name="Maven: org.aspectj:aspectjweaver:1.8.13" />
+          <element id="library" level="project" name="Maven: jakarta.servlet:jakarta.servlet-api:6.0.0" />
+          <element id="library" level="project" name="Maven: org.thymeleaf:thymeleaf:3.1.1.RELEASE" />
+          <element id="library" level="project" name="Maven: ognl:ognl:3.3.4" />
+          <element id="library" level="project" name="Maven: org.javassist:javassist:3.29.0-GA" />
+          <element id="library" level="project" name="Maven: org.attoparser:attoparser:2.0.6.RELEASE" />
+          <element id="library" level="project" name="Maven: org.unbescape:unbescape:1.1.6.RELEASE" />
+          <element id="library" level="project" name="Maven: org.slf4j:slf4j-api:2.0.5" />
+          <element id="library" level="project" name="Maven: org.thymeleaf:thymeleaf-spring6:3.1.1.RELEASE" />
+        </element>
+      </element>
+    </root>
+  </artifact>
+</component>
