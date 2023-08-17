@@ -8,10 +8,11 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Getter
 @Setter
+@Builder
 @ToString
 public class Todo {
     private Integer id;
     private String title;
     private String priority;
-    private LocalDateTime createdAt;
+    private Object createdAt;
 }
