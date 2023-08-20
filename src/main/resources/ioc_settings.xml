@@ -17,7 +17,25 @@
           p:dataSource-ref="dataSource"
     />
 
-    <bean id="todoDao" class="org.example.spring.dao.TodoDao"
-          c:jdbcTemplate-ref="jdbcTemplate"/>
+    <bean id="namedParameterJdbcTemplate" class="org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate"
+          c:dataSource-ref="dataSource"
+    />
 
+
+    <bean id="todoDao" class="org.example.spring.dao.archive.TodoDao"
+          c:jdbcTemplate-ref="jdbcTemplate"
+    />
+
+    <bean id="todoDaoForNamedJDBC" class="org.example.spring.dao.TodoDao"
+          c:namedParameterJdbcTemplate-ref="namedParameterJdbcTemplate"
+    />
+
+
+    <bean id="simpleJdbcCall" class="org.springframework.jdbc.core.simple.SimpleJdbcCall"
+          c:dataSource-ref="dataSource"
+    />
+
+    <bean id="dao" class="org.example.spring.dao.archive.TodoDaoForSimpleJdbcCall"
+        c:jdbcTemplate-ref="jdbcTemplate"
+    />
 </beans>

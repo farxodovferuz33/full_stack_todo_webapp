@@ -2,54 +2,54 @@ package org.example.spring.dao;
 
 import org.example.spring.model.Todo;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.time.LocalDateTime;
 import java.util.List;
 
 public class TodoDao {
-    private final JdbcTemplate jdbcTemplate;
+    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
-    public TodoDao(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+    public TodoDao(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+        this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
     }
 
+
+// USED JDBC INSERT
     public void save(Todo todo) {
-        var sql = "insert into todos(title, priority) values (?, ?);";
-        jdbcTemplate.update(sql, todo.getTitle(), todo.getPriority());
+        var sql = "insert into spring_jdbc.todos(title, priority) values (:title, :priority);";
+        SqlParameterSource source = new BeanPropertySqlParameterSource(todo);
+        namedParameterJdbcTemplate.update(sql, source);
     }
 
     public Todo findById(Integer id) {
-        var sql = "select * from todos where id = ?;";
+        var sql = "select * from spring_jdbc.todos where id = :id;";
+        MapSqlParameterSource parameterSource = new MapSqlParameterSource();
+        parameterSource.addValue("id", id);
         var mapper = BeanPropertyRowMapper.newInstance(Todo.class);
-        return jdbcTemplate.queryForObject(sql, mapper, id);
-
-//        return jdbcTemplate.queryForObject("select * from todos where id = ?;", (rs, rowNum) -> Todo.builder()
-//                .id(rs.getInt("id"))
-//                .title(rs.getString("title"))
-//                .priority(rs.getString("priority"))
-//                .createdAt(rs.getObject("createdAt")).
-//                build(), id);
+        return namedParameterJdbcTemplate.queryForObject(sql, parameterSource, mapper);
     }
 
 
     public List<Todo> findAll(){
-        var sql = "select * from todos";
+        var sql = "select * from spring_jdbc.todos";
         var mapper = BeanPropertyRowMapper.newInstance(Todo.class);
-        return jdbcTemplate.query(sql, mapper);
+        return namedParameterJdbcTemplate.query(sql, mapper);
     }
 
     public void delete(Integer id){
-        var sql = "delete from todos where id = ?;";
-        jdbcTemplate.update(sql, id);
+        var sql = "delete from spring_jdbc.todos where id = :id;";
+        MapSqlParameterSource parameterSource = new MapSqlParameterSource();
+        parameterSource.addValue("id", id);
+        namedParameterJdbcTemplate.update(sql, parameterSource);
     }
 
     public void update(Todo todo) {
-        var sql = "update todos set title = ?, priority = ? where id = ?;";
-        jdbcTemplate.update(sql, todo.getTitle(), todo.getPriority(), todo.getId());
+        var sql = "update spring_jdbc.todos set title = :title, priority = :priority where id = :id;";
+        SqlParameterSource source = new BeanPropertySqlParameterSource(todo);
+        namedParameterJdbcTemplate.update(sql, source);
     }
 
 }
