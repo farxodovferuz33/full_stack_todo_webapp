@@ -1,0 +1,12 @@
+foreign key to the todos: user_id
+for printing select * from todo where user_id = JSESSIONID
+for deleting delete todo where id = id and user_id = JSESSIONID
+for updating update todo settings... where id = id and user_id = JSESSIONID
+todo
+
+ADMIN ROLE TO BLOCK users and can add todos to himself as well
+security for admin panels
+admin click deactivate update query for DB status in_active
+
+
+Checking while logging in if user is not in_active

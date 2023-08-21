@@ -1,18 +1,31 @@
 package org.example.spring.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
+import org.example.spring.config.security.CustomUserDetails;
+import org.example.spring.config.security.CustomUserDetailsService;
 import org.example.spring.dao.TodoDao;
+import org.example.spring.domain.AuthUser;
+import org.example.spring.exception.AccessDenied;
 import org.example.spring.model.Todo;
+import org.example.spring.session.SessionUser;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 public class TodoController {
-
+    private final SessionUser sessionUser;
     ClassPathXmlApplicationContext context =
             new ClassPathXmlApplicationContext("ioc_settings.xml");
     TodoDao todoDao = context.getBean(TodoDao.class);
+
+    public TodoController(SessionUser sessionUser) {
+        this.sessionUser = sessionUser;
+    }
 
     @GetMapping("/")
     public String getHome() {
@@ -20,8 +33,12 @@ public class TodoController {
     }
 
     @PostMapping("/todo/add/post")
-    public String postTodo(@ModelAttribute Todo todo) {
+    public String postTodo(@AuthenticationPrincipal CustomUserDetails customUserDetails, @ModelAttribute Todo todo) {
+        AuthUser user = sessionUser.getUser();
         if (!todo.getTitle().isEmpty() || !todo.getPriority().isEmpty()) {
+            System.out.println(customUserDetails.getAuthUser());
+            System.out.println(user);
+            todo.setUser_id(user.getId());
             todoDao.save(todo);
         }
         return "redirect:/todo/list";
@@ -31,7 +48,11 @@ public class TodoController {
     public ModelAndView getTodos() {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("todolist");
-        modelAndView.addObject("todos", todoDao.findAll());
+        AuthUser user = sessionUser.getUser();
+
+        Long id = user.getId();
+        modelAndView.addObject("todos", todoDao.selectByUserId(id));
+
         return modelAndView;
     }
 
@@ -41,33 +62,33 @@ public class TodoController {
     }
 
     @PostMapping(value = "/todo/delete")
-    public String deleteTodo(@RequestParam("id") int id) {
-        todoDao.delete(id);
-        return "redirect:/todo/list";
+    public String deleteTodo(@RequestParam("id") int id, HttpServletRequest request) {
+        if (request.getUserPrincipal() != null) {
+            AuthUser user = sessionUser.getUser();
+            todoDao.deleteByUserId(id, user.getId());
+            return "redirect:/todo/list";
+        }
+        return "redirect:/auth/login";
     }
 
     @GetMapping(value = "/todo/update")
-    public ModelAndView updateTodo(@RequestParam("id") int id) {
+    public ModelAndView updateTodo(@RequestParam("id") int id, @AuthenticationPrincipal CustomUserDetails userDetails) throws AccessDenied {
         ModelAndView modelAndView = new ModelAndView();
-        Todo byId = todoDao.findById(id);
+        Todo byId = todoDao.findByIdByUserId(id, userDetails.getAuthUser().getId());
         modelAndView.setViewName("todoupdate");
         modelAndView.addObject(byId);
         return modelAndView;
     }
 
-
     @PostMapping(value = "/todo/update")
-    public String updateTodoDone(@RequestParam("id") int id, @RequestParam("title") String newTitle, @RequestParam("priority") String newPriority) {
+    public String updateTodoDone(@RequestParam("id") int id, @RequestParam("title") String newTitle, @RequestParam("priority") String newPriority) throws AccessDenied {
         Todo byId = todoDao.findById(id);
         if (!newPriority.isEmpty() || !newTitle.isEmpty()) {
+            AuthUser user = sessionUser.getUser();
             byId.setTitle(newTitle);
             byId.setPriority(newPriority);
-            todoDao.update(byId);
+            todoDao.updateByUserId(byId, user.getId());
         }
         return "redirect:/todo/list";
     }
-
-
-
-
 }

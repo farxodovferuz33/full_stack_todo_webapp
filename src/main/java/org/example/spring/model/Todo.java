@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 @ToString
 public class Todo {
     private Integer id;
+    private Long user_id;
     private String title;
     private String priority;
     private Object createdAt;

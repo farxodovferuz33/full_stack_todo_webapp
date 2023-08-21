@@ -1,3 +1,7 @@
+<html lang="en"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+>
+
 <head th:fragment="head(title,links)">
     <meta charset="UTF-8">
     <th:block th:replace="${title}" />
@@ -11,7 +15,8 @@
 <div th:fragment="header">
     <nav class="navbar navbar-expand-lg bg-body-tertiary">
         <div class="container-fluid">
-            <a class="navbar-brand" href="/">Todo CRUD application</a>
+            <a sec:authorize="isAnonymous()" class="navbar-brand" href="/">Todo CRUD application</a>
+            <a sec:authorize="isAuthenticated()" class="navbar-brand mx-5" href="/" th:text="${#authentication.getName()}" style="color: red"></a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarSupportedContent"
                     aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -39,8 +44,14 @@
                             <li><a class="dropdown-item" href="#">Something else here</a></li>
                         </ul>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link disabled">Disabled</a>
+
+                    <li class="nav-item mx-5">
+                        <a style="margin-left: 180px" th:href="@{/auth/login}" class="btn btn-success"
+                            sec:authorize="isAnonymous()"
+                        >Login</a>
+                        <a th:href="@{/auth/register}" class="btn btn-primary" sec:authorize="isAnonymous()">Register</a>
+
+                        <a th:href="@{/auth/logout}" class="btn btn-danger" sec:authorize="isAuthenticated()">Logout </a>
                     </li>
                 </ul>
                 <form class="d-flex" role="search">
@@ -62,3 +73,6 @@
             integrity="sha384-mQ93GR66B00ZXjt0YO5KlohRA5SY2XofN4zfuZxLkoj1gXtW8ANNCe9d5Y3eG5eD"
             crossorigin="anonymous"></script>
 </section>
+
+</html>
+
