@@ -65,7 +65,8 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
         registry.addResourceHandler("/style/*").addResourceLocations("classpath:/style/");
     }
 
-    @Bean public DriverManagerDataSource dataSource(){
+    @Bean
+    public DriverManagerDataSource dataSource() {
         var dataSource = new DriverManagerDataSource();
         dataSource.setUrl(environment.getRequiredProperty("jdbc.url"));
         dataSource.setUsername(environment.getRequiredProperty("jdbc.username"));
@@ -76,7 +77,7 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
     }
 
     @Bean
-    public NamedParameterJdbcTemplate namedParameterJdbcTemplate(){
+    public NamedParameterJdbcTemplate namedParameterJdbcTemplate() {
         return new NamedParameterJdbcTemplate(dataSource());
     }
 }

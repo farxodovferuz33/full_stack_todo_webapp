@@ -1,17 +1,17 @@
 package org.example.spring.dao;
 
-import org.example.spring.domain.AuthUser;
 import org.example.spring.exception.AccessDenied;
 import org.example.spring.model.Todo;
-import org.example.spring.session.SessionUser;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+@Component
 public class TodoDao {
 
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;

@@ -23,7 +23,7 @@
 
             <tbody class="table table-success">
             <tr th:each="todo, index : ${todos}" >
-                <td th:text="${todo.getId()}"></td>
+                <td th:text="${index.count}"></td>
                 <td th:text="${todo.getTitle()}"></td>
                 <td th:text="${todo.getPriority()}"></td>
                 <td th:text="${#dates.format(#calendars.createNow(), 'dd-MM-yyy')}"></td>

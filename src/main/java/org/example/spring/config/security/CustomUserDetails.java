@@ -7,20 +7,19 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 
+@Getter
 public class CustomUserDetails implements UserDetails {
     private final AuthUser authUser;
+    private final Collection<GrantedAuthority> authorities;
 
-    public CustomUserDetails(AuthUser authUser) {
+    public CustomUserDetails(AuthUser authUser, Collection<GrantedAuthority> authorities1) {
         this.authUser = authUser;
+        this.authorities = authorities1;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
-    }
-
-    public AuthUser getAuthUser() {
-        return authUser;
+        return this.authorities;
     }
 
     @Override

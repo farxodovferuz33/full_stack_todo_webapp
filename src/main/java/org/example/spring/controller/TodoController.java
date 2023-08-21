@@ -2,7 +2,6 @@ package org.example.spring.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.example.spring.config.security.CustomUserDetails;
-import org.example.spring.config.security.CustomUserDetailsService;
 import org.example.spring.dao.TodoDao;
 import org.example.spring.domain.AuthUser;
 import org.example.spring.exception.AccessDenied;
@@ -10,10 +9,11 @@ import org.example.spring.model.Todo;
 import org.example.spring.session.SessionUser;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
@@ -45,12 +45,13 @@ public class TodoController {
     }
 
     @GetMapping("/todo/list")
-    public ModelAndView getTodos() {
+    public ModelAndView getTodos(@AuthenticationPrincipal CustomUserDetails userDetails) {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("todolist");
         AuthUser user = sessionUser.getUser();
 
         Long id = user.getId();
+//        userDetails.getAuthUser().getId();
         modelAndView.addObject("todos", todoDao.selectByUserId(id));
 
         return modelAndView;
