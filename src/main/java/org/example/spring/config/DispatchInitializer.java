@@ -1,5 +1,7 @@
 package org.example.spring.config;
 
+import jakarta.servlet.MultipartConfigElement;
+import jakarta.servlet.ServletRegistration;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
 public class DispatchInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
@@ -17,5 +19,11 @@ public class DispatchInitializer extends AbstractAnnotationConfigDispatcherServl
     @Override
     protected String[] getServletMappings() {
         return new String[]{"/"};
+    }
+
+    @Override
+    protected void customizeRegistration(ServletRegistration.Dynamic registration) {
+        MultipartConfigElement multipartConfig = new MultipartConfigElement("");
+        registration.setMultipartConfig(multipartConfig);
     }
 }

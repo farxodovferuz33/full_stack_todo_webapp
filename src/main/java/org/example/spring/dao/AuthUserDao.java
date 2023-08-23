@@ -22,11 +22,14 @@ public class AuthUserDao {
 
     public Long save(@NonNull AuthUser authUser) {
         var sql = "insert into spring_jdbc.authuser(username, password, role) values(:username, :password, :role)";
-        var paramSource = new MapSqlParameterSource().addValue("username", authUser.getUsername()).addValue("password", authUser.getPassword()).addValue("role", authUser.getRole());
+        var paramSource = new MapSqlParameterSource()
+                .addValue("username", authUser.getUsername())
+                .addValue("password", authUser.getPassword())
+                .addValue("role", authUser.getRole());
+//                .addValue("image", authUser.getImage());
         var keyHolder = new GeneratedKeyHolder();
         namedParameterJdbcTemplate.update(sql, paramSource, keyHolder, new String[]{"id"});
         return (Long) Objects.requireNonNull(keyHolder.getKeys()).get("id");
-
     }
 
     public List<AuthUser> getAllUsers() {

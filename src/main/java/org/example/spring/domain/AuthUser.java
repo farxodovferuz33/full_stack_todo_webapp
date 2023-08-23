@@ -1,6 +1,7 @@
 package org.example.spring.domain;
 
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @Setter
@@ -14,4 +15,5 @@ public class AuthUser {
     private String password;
     private boolean active;
     private String role;
+//    private MultipartFile image;
 }

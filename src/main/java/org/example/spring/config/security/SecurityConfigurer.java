@@ -39,7 +39,8 @@ public class SecurityConfigurer extends WebSecurityConfiguration {
                                 AntPathRequestMatcher.antMatcher("/style/**"),
                                 AntPathRequestMatcher.antMatcher("/auth/login"),
                                 AntPathRequestMatcher.antMatcher("/auth/register"),
-                                AntPathRequestMatcher.antMatcher("/auth/logout")
+                                AntPathRequestMatcher.antMatcher("/auth/logout"),
+                                AntPathRequestMatcher.antMatcher("/user/image/**")
                         )
                         .permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
