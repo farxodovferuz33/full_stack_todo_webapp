@@ -29,9 +29,9 @@
                 <td th:text="${#dates.format(#calendars.createNow(), 'dd-MM-yyy')}"></td>
 
                 <td>
-                    <form th:action="@{/todo/delete(id=${todo.getId()})}" method="post">
-                        <button type="submit"  class="btn btn-danger">Delete</button>||
-                        <a th:href="@{/todo/update(id=${todo.getId()})}" class="btn btn-warning">Update</a>
+                    <form  th:action="@{/todo/delete(id=${todo.getId()})}" method="post">
+                        <button th:text="#{del}" type="submit"  class="btn btn-danger">Delete</button>||
+                        <a th:text="#{upt}" th:href="@{/todo/update(id=${todo.getId()})}" class="btn btn-warning">Update</a>
                     </form>
                 </td>
 

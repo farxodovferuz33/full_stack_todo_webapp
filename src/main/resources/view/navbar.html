@@ -1,5 +1,6 @@
 <html lang="en"
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+      xmlns:sec1="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
 >
 
 <head th:fragment="head(title,links)">
@@ -16,7 +17,7 @@
     <nav class="navbar navbar-expand-lg bg-body-tertiary">
         <div class="container-fluid">
             <img width="100" height="100" sec:authorize="isAuthenticated()" th:src="@{'/user/image/'+${#authentication.getName()}+'.jpeg'}" alt="404" />
-            <a sec:authorize="isAnonymous()" class="navbar-brand" href="/">Todo CRUD application</a>
+            <a sec:authorize="isAnonymous()" th:text="#{appName}" class="navbar-brand" href="/">Todo CRUD application</a>
             <a sec:authorize="isAuthenticated()" class="navbar-brand mx-5" href="/" th:text="${#authentication.getName()}" style="color: red"></a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarSupportedContent"
@@ -26,38 +27,43 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link active btn btn-success" aria-current="page" href="/todo/list">TODO LIST</a>
+                        <a class="nav-link active btn btn-success" th:text="#{todoList}" aria-current="page" href="/todo/list">TODO LIST</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link btn btn-primary mx-3" href="/todo/addpage">ADD TODO</a>
+                        <a class="nav-link btn btn-primary mx-3" th:text="#{addTodo}" href="/todo/addpage">ADD TODO</a>
+
                     </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                           aria-expanded="false">
-                            Dropdown
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">Action</a></li>
-                            <li><a class="dropdown-item" href="#">Another action</a></li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li><a class="dropdown-item" href="#">Something else here</a></li>
-                        </ul>
+
+                    <li>
+                        <a class="nav-link btn btn-success mx-3" href="?lang=uz">UZ</a>
                     </li>
+                    <li>
+                        <a class="nav-link btn btn-danger mx-3" href="?lang=eng_us">ENG</a>
+
+                    </li>
+                    <li>
+                        <a class="nav-link btn btn-primary mx-3" href="?lang=russian">RU</a>
+
+                    </li>
+
+                    <li class="nav-item">
+                        <a sec:authorize="isAuthenticated()" th:if="${#authorization.expression('hasRole(''ADMIN'')')}"
+                           class="nav-link btn btn-primary mx-3" th:text="#{adminPage}" href="/admin/users/list">Admin page</a>
+                    </li>
+
 
                     <li class="nav-item mx-5">
                         <a style="margin-left: 180px" th:href="@{/auth/login}" class="btn btn-success"
-                            sec:authorize="isAnonymous()"
+                            sec:authorize="isAnonymous()" th:text="#{login}"
                         >Login</a>
-                        <a th:href="@{/auth/register}" class="btn btn-primary" sec:authorize="isAnonymous()">Register</a>
+                        <a th:href="@{/auth/register}" th:text="#{Register}" class="btn btn-primary" sec:authorize="isAnonymous()">Register</a>
 
-                        <a th:href="@{/auth/logout}" class="btn btn-danger" sec:authorize="isAuthenticated()">Logout </a>
+                        <a th:href="@{/auth/logout}" th:text="#{logout}" class="btn btn-danger" sec:authorize="isAuthenticated()">Logout </a>
                     </li>
                 </ul>
                 <form class="d-flex" role="search">
-                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                    <button class="btn btn-outline-success" type="submit">Search</button>
+                    <input class="form-control me-2" type="search" th:placeholder="#{search}" aria-label="Search">
+                    <button class="btn btn-outline-success" th:text="#{search}" type="submit">Search</button>
                 </form>
             </div>
         </div>

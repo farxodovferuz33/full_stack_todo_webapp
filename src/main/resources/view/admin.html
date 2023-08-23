@@ -32,10 +32,10 @@
 
             <td style="display: flex">
                 <form th:if="${!user.isActive()}" th:action="@{/admin/activate/user(id=${user.getId()})}" method="post">
-                    <button  type="submit" class="btn btn-success">ACTIVATE</button>
+                    <button th:text="#{act}" type="submit" class="btn btn-success">ACTIVATE</button>
                 </form>
                 <form th:if="${user.isActive()}" th:action="@{/admin/deactivate/user(id=${user.getId()})}" method="post">
-                    <button  type="submit" class="btn btn-danger">DEACTIVATE</button>
+                    <button th:text="#{deact}"  type="submit" class="btn btn-danger">DEACTIVATE</button>
                 </form>
             </td>
         </tr>
