@@ -1,20 +1,20 @@
 package org.example.spring.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import org.example.spring.config.security.CustomUserDetails;
 import org.example.spring.dao.TodoDao;
 import org.example.spring.domain.AuthUser;
 import org.example.spring.exception.AccessDenied;
+import org.example.spring.exception.NotFoundException;
 import org.example.spring.model.Todo;
 import org.example.spring.session.SessionUser;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
@@ -33,15 +33,24 @@ public class TodoController {
         return "home";
     }
 
+    @GetMapping("/todo/addpage")
+    public String addTodos(Model model) {
+        model.addAttribute("todo", new Todo());
+        return "todoadd";
+    }
+
     @PostMapping("/todo/add/post")
-    public String postTodo(@AuthenticationPrincipal CustomUserDetails customUserDetails, @ModelAttribute Todo todo) {
-        AuthUser user = sessionUser.getUser();
-        if (!todo.getTitle().isEmpty() || !todo.getPriority().isEmpty()) {
-            System.out.println(customUserDetails.getAuthUser());
-            System.out.println(user);
-            todo.setUser_id(user.getId());
-            todoDao.save(todo);
+    public String postTodo(@Valid @ModelAttribute("todo") Todo todo, BindingResult errors) {
+
+        if (errors.hasErrors()) {
+            return "todoadd";
         }
+
+        AuthUser user = sessionUser.getUser();
+
+        todo.setUser_id(user.getId());
+        todoDao.save(todo);
+
         return "redirect:/todo/list";
     }
 
@@ -58,16 +67,14 @@ public class TodoController {
         return modelAndView;
     }
 
-    @GetMapping("/todo/addpage")
-    public String addTodos() {
-        return "todoadd";
-    }
+
 
     @PostMapping(value = "/todo/delete")
     public String deleteTodo(@RequestParam("id") int id, HttpServletRequest request) {
         if (request.getUserPrincipal() != null) {
             AuthUser user = sessionUser.getUser();
-            todoDao.deleteByUserId(id, user.getId());
+            if (!todoDao.deleteByUserId(id, user.getId()))
+                throw new NotFoundException("Todo not Found with id:%s".formatted(id), "/todo/list");
             return "redirect:/todo/list";
         }
         return "redirect:/auth/login";
@@ -93,4 +100,16 @@ public class TodoController {
         }
         return "redirect:/todo/list";
     }
+
+
+    @ExceptionHandler({NotFoundException.class})
+    public ModelAndView error_404(HttpServletRequest request, NotFoundException e) {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("404");
+        modelAndView.addObject("message", e.getMessage());
+        modelAndView.addObject("path", request.getRequestURI());
+        modelAndView.addObject("back_path", e.getPath());
+        return modelAndView;
+    }
+
 }

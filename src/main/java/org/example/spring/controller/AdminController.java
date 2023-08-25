@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
+//@PreAuthorize("hasRole('ADMIN')")
 @RequestMapping("/admin")
 public class AdminController {
     private final AuthUserDao authUserDao;

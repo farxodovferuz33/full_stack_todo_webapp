@@ -1,5 +1,6 @@
 package org.example.spring.controller;
 
+import jakarta.validation.Valid;
 import org.example.spring.dao.AuthUserDao;
 import org.example.spring.dao.UploadsDao;
 import org.example.spring.domain.AuthUser;
@@ -11,7 +12,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -42,7 +45,8 @@ public class AuthController {
     }
 
     @GetMapping("/auth/register")
-    public String registerPage() {
+    public String registerPage(Model model) {
+        model.addAttribute("dto", new UserRegisterDTO());
         return "register";
     }
 
@@ -52,11 +56,16 @@ public class AuthController {
     }
 
     @PostMapping("/auth/register")
-    public String register(@ModelAttribute UserRegisterDTO dto) throws IOException {
+    public String register(@Valid @ModelAttribute("dto") UserRegisterDTO dto, BindingResult errors) throws IOException {
+
+        if (errors.hasErrors()) {
+            System.out.println(errors);
+            return "register";
+        }
 
         AuthUser authUser = AuthUser.builder()
-                .username(dto.username())
-                .password(passwordEncoder.encode(dto.password()))
+                .username(dto.getUsername())
+                .password(passwordEncoder.encode(dto.getPassword()))
                 .role("USER")
 //                .image(dto.file())
                 .build();
@@ -65,12 +74,12 @@ public class AuthController {
 
         Uploads upload = Uploads.builder()
                 .user_id(save)
-                .originalName(dto.file().getOriginalFilename())
-                .mimeType(dto.file().getContentType())
-                .generatedName(UUID.randomUUID() + "." + StringUtils.getFilenameExtension(dto.file().getOriginalFilename()))
-                .size(dto.file().getSize()).build();
+                .originalName(dto.getFile().getOriginalFilename())
+                .mimeType(dto.getFile().getContentType())
+                .generatedName(UUID.randomUUID() + "." + StringUtils.getFilenameExtension(dto.getFile().getOriginalFilename()))
+                .size(dto.getFile().getSize()).build();
         uploadsDao.save(upload);
-        Files.copy(dto.file().getInputStream(),
+        Files.copy(dto.getFile().getInputStream(),
                 rootPath.resolve(authUser.getUsername()+"."+upload.getMimeType().substring(6)), StandardCopyOption.REPLACE_EXISTING);
         System.out.println(upload.getOriginalName());
         return "redirect:/auth/login";

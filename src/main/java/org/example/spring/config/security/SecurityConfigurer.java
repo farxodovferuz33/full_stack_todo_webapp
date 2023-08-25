@@ -43,7 +43,7 @@ public class SecurityConfigurer extends WebSecurityConfiguration {
                                 AntPathRequestMatcher.antMatcher("/user/image/**")
                         )
                         .permitAll()
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
+//                        .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest()
                         .authenticated()
         );

@@ -1,6 +1,7 @@
 package org.example.spring.dao;
 
 import org.example.spring.exception.AccessDenied;
+import org.example.spring.exception.NotFoundException;
 import org.example.spring.model.Todo;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -43,14 +44,10 @@ public class TodoDao {
         parameterSource.addValue("id", id);
         parameterSource.addValue("us_id", user_id);
         var mapper = BeanPropertyRowMapper.newInstance(Todo.class);
-        Todo todo = namedParameterJdbcTemplate.queryForObject(sql, parameterSource, mapper);
-        if (todo != null) {
-            return todo;
-
-        } else {
-
-            throw new AccessDenied("You can delete and update your todos");
-
+        try {
+            return namedParameterJdbcTemplate.queryForObject(sql, parameterSource, mapper);
+        }catch (Exception e){
+            throw new NotFoundException("Todo not found", "/todo/list");
         }
     }
 
@@ -75,12 +72,13 @@ public class TodoDao {
         namedParameterJdbcTemplate.update(sql, parameterSource);
     }
 
-    public void deleteByUserId(Integer id, Long user_id) {
+    public boolean deleteByUserId(Integer id, Long user_id) {
         var sql = "delete from spring_jdbc.todos where id = :id and user_id = :us_id;";
         MapSqlParameterSource parameterSource = new MapSqlParameterSource();
         parameterSource.addValue("id", id);
         parameterSource.addValue("us_id", user_id);
-        namedParameterJdbcTemplate.update(sql, parameterSource);
+        int update = namedParameterJdbcTemplate.update(sql, parameterSource);
+        return update > 0;
     }
 
     public void update(Todo todo) {
@@ -90,7 +88,7 @@ public class TodoDao {
     }
 
 
-    public void updateByUserId(Todo todo, Long user_id) throws AccessDenied {
+    public boolean updateByUserId(Todo todo, Long user_id) throws AccessDenied {
         var sql = "update spring_jdbc.todos set title = :title, priority = :priority where id = :id and user_id = :us_id;";
         MapSqlParameterSource parameterSource = new MapSqlParameterSource();
         parameterSource.addValue("id", todo.getId());
@@ -101,6 +99,7 @@ public class TodoDao {
         if (update == 0) {
             throw new AccessDenied("You can delete and update your todos");
         }
+        return update>0;
     }
 
 

@@ -41,10 +41,13 @@
                         <a class="nav-link btn btn-danger mx-3" href="?lang=eng_us">ENG</a>
 
                     </li>
+
+
                     <li>
                         <a class="nav-link btn btn-primary mx-3" href="?lang=russian">RU</a>
 
                     </li>
+
 
                     <li class="nav-item">
                         <a sec:authorize="isAuthenticated()" th:if="${#authorization.expression('hasRole(''ADMIN'')')}"
